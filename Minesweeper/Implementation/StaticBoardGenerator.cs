@@ -17,7 +17,9 @@ public class StaticBoardGenerator : IBoardGenerator
     private readonly int _columns;
     private readonly int _minesCount;
     private readonly string _boardDefinition;
-
+    public int minimumColumns = 3;
+    public int minimumRows = 3;
+    
 
     public StaticBoardGenerator(string boardDefinition) 
     {
@@ -32,9 +34,21 @@ public class StaticBoardGenerator : IBoardGenerator
     }
     public Board GenerateBoard()
     {
-        int rowsCount = _rows.Length;
-        int columnsCount = _rows[0].Length;
+    int rowsCount = _rows.Length;
+    int columnsCount = _rows[0].Length;
+    Board board = new Board(columnsCount, rowsCount, _minesCount);
+    for (int i = 0; i < board.Rows; i++)
+    {
+        for (int j = 0; j < board.Columns; j++)
+        {
+            bool isMine = _rows[i][j] == 'm';
 
-        return new Board(rowsCount, columnsCount, _minesCount);
+            Tile tile = new Tile(isMine);
+
+            board.Tiles[i, j] = tile;
+        }
+    }
+
+    return board;
     }
 }
