@@ -23,12 +23,30 @@ public class StaticBoardGenerator : IBoardGenerator
 
     public StaticBoardGenerator(string boardDefinition) 
     {
-
+        if (string.IsNullOrEmpty(boardDefinition))
+        {
+            throw new ArgumentNullException("Board definition cannot be null or empty");
+        }
         _boardDefinition = boardDefinition;
         // TODO: Implement this constructor
         _rows = _boardDefinition.Split(',');
         _minesCount = _boardDefinition.Count(c => c == 'm');
-
+        if (_rows.Length < minimumRows)
+        {
+            throw new ArgumentException("Board definition must have at least three rows");
+        }
+        if (_rows[0].Length < minimumColumns)
+        {
+            throw new ArgumentException("Board must have at least three columns");
+        }
+        if (_rows.Any(row => row.Length != _rows[0].Length))
+        {
+            throw new ArgumentException("Board definition must have equal amount of columns");
+        }
+        if (_minesCount < 1)
+        {
+            throw new ArgumentException("Board must have at least one mine");
+        }
         
 
     }
