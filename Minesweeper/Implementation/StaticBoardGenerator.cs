@@ -16,7 +16,7 @@ public class StaticBoardGenerator : IBoardGenerator
     private readonly string[] _rows;
     private readonly int _minesCount;
     private readonly string _boardDefinition;
-    private string mineCharacter = "m";
+    private char mineCharacter = 'm';
     public int minimumColumns = 3;
     public int minimumRows = 3;
     
@@ -30,7 +30,7 @@ public class StaticBoardGenerator : IBoardGenerator
         _boardDefinition = boardDefinition;
         // TODO: Implement this constructor
         _rows = _boardDefinition.Split(',');
-        _minesCount = _boardDefinition.Count(c => c == mineCharacter.Single());
+        _minesCount = _boardDefinition.Count(c => c == mineCharacter);
         if (_rows.Length < minimumRows)
         {
             throw new ArgumentException("Board definition must have at least three rows");
