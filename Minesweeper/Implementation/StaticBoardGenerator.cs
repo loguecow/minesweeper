@@ -16,7 +16,8 @@ public class StaticBoardGenerator : IBoardGenerator
     private readonly string[] _rows;
     private readonly int _minesCount;
     private readonly string _boardDefinition;
-    private char mineCharacter = 'm';
+    public char mineCharacter = 'm';
+    private int minimumMines = 1;
     public int minimumColumns = 3;
     public int minimumRows = 3;
     
@@ -43,9 +44,10 @@ public class StaticBoardGenerator : IBoardGenerator
         {
             throw new ArgumentException("Board definition must have equal amount of columns");
         }
-        if (_minesCount < 1)
+        if (_minesCount < minimumMines)
         {
             throw new ArgumentException("Board must have at least one mine");
+            /* throw new ArgumentException($"Board must have at least {minimumMines} mine"); */
         }
         
 
