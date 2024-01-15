@@ -16,10 +16,10 @@ public class StaticBoardGenerator : IBoardGenerator
     private readonly string[] _rows;
     private readonly int _minesCount;
     private readonly string _boardDefinition;
-    public char mineCharacter = 'm';
+    private char mineCharacter = 'm';
     private int minimumMines = 1;
-    public int minimumColumns = 3;
-    public int minimumRows = 3;
+    private int minimumColumns = 3;
+    private int minimumRows = 3;
     
 
     public StaticBoardGenerator(string boardDefinition) 
