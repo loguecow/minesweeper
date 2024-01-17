@@ -14,11 +14,13 @@ public class Board
         Mines = mines;
         Tiles = new Tile[rows, columns];
     }
-    
+
+    public bool GameWon { get; private set; } = false;
     public Tile[,] Tiles { get; private set; } = new Tile[0, 0];
     public int Mines { get; private set; } = 0;
     public int Columns { get; private set; } = 0;
     public int Rows { get; private set; } = 0;
+    public int CorrectlyFlaggedTiles { get; private set; } = 0;
 
     public void FlagTile(int column, int row)
     {
