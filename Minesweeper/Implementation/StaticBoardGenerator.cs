@@ -16,60 +16,60 @@ public class StaticBoardGenerator : IBoardGenerator
     private readonly string[] _rows;
     private readonly int _minesCount;
     private readonly string _boardDefinition;
-    private char mineCharacter = 'm';
-    private int minimumMines = 1;
-    private int minimumColumns = 3;
-    private int minimumRows = 3;
-    
+    private const char mineCharacter = 'm';
+    private const int minimumMines = 1;
+    private const int minimumColumns = 3;
+    private const int minimumRows = 3;
 
-    public StaticBoardGenerator(string boardDefinition) 
+
+    public StaticBoardGenerator(string boardDefinition)
     {
         if (string.IsNullOrEmpty(boardDefinition))
         {
             throw new ArgumentNullException("Board definition cannot be null or empty");
         }
         _boardDefinition = boardDefinition;
-        // TODO: Implement this constructor
         _rows = _boardDefinition.Split(',');
         _minesCount = _boardDefinition.Count(c => c == mineCharacter);
         if (_rows.Length < minimumRows)
         {
             throw new ArgumentException("Board definition must have at least three rows");
         }
-        if (_rows[0].Length < minimumColumns)
-        {
-            throw new ArgumentException("Board must have at least three columns");
-        }
         if (_rows.Any(row => row.Length != _rows[0].Length))
         {
             throw new ArgumentException("Board definition must have equal amount of columns");
         }
+        if (_rows[0].Length < minimumColumns)
+        {
+            throw new ArgumentException("Board must have at least three columns");
+        }
         if (_minesCount < minimumMines)
         {
             throw new ArgumentException("Board must have at least one mine");
-            /* throw new ArgumentException($"Board must have at least {minimumMines} mine"); */
         }
-        
+
 
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public Board GenerateBoard()
     {
-    int rowsCount = _rows.Length;
-    int columnsCount = _rows[0].Length;
+        int rowsCount = _rows.Length;
+        int columnsCount = _rows[0].Length;
 
-    Board board = new Board(columnsCount, rowsCount, _minesCount);
-    for (int i = 0; i < board.Rows; i++)
-    {
-        for (int j = 0; j < board.Columns; j++)
+        Board board = new(columnsCount, rowsCount, _minesCount);
+        for (int rowIndex = 0; rowIndex < board.Rows; rowIndex++)
         {
-            bool isMine = _rows[i][j] == 'm';
+            for (int columIndex = 0; columIndex < board.Columns; columIndex++)
+            {
+                bool isMine = _rows[rowIndex][columIndex] == mineCharacter;
 
-            Tile tile = new Tile(isMine);
-
-            board.Tiles[i, j] = tile;
+                board.Tiles[rowIndex, columIndex] = new Tile(isMine);
+            }
         }
-    }
 
-    return board;
+        return board;
     }
 }
