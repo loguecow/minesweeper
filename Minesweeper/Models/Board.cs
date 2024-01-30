@@ -24,12 +24,26 @@ public class Board
 
     public void FlagTile(int column, int row)
     {
-        throw new NotImplementedException();
+        //make IsFlagged true
+        //if IsMine is true, increment CorrectlyFlaggedTiles
+        Tiles[column, row].IsFlagged = true;
+        if (Tiles[column,row].IsFlagged == true && Tiles[column,row].IsMine == true)
+        {
+            CorrectlyFlaggedTiles++;
+        }
+        if (CorrectlyFlaggedTiles == Mines)
+        {
+            GameWon = true;
+        }
     }
 
     public void UnflagTile(int column, int row)
     {
-        throw new NotImplementedException();
+        if (Tiles[column, row].IsFlagged == true && Tiles[column, row].IsMine == true)
+        {
+            CorrectlyFlaggedTiles--;
+        }
+        Tiles[column, row].IsFlagged = false;
     }
 
     public void RevealTile(int column, int row)
