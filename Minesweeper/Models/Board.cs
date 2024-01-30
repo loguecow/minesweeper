@@ -24,8 +24,6 @@ public class Board
 
     public void FlagTile(int column, int row)
     {
-        //make IsFlagged true
-        //if IsMine is true, increment CorrectlyFlaggedTiles
         Tiles[column, row].IsFlagged = true;
         if (Tiles[column,row].IsFlagged == true && Tiles[column,row].IsMine == true)
         {
@@ -48,6 +46,10 @@ public class Board
 
     public void RevealTile(int column, int row)
     {
-        throw new NotImplementedException();
+        Tiles[column, row].IsRevealed = true;
+        if (Tiles[column, row].IsMine == true)
+        {
+            throw new MineExplodedException();
+        }
     }
 }
