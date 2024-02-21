@@ -9,14 +9,21 @@ public class Game
     public DateTime? EndTime { get; private set; } = null;
     public IPlayer Player { get; set; }
 
+    private bool IsFirstTileRevealed { get; set; } = false;
+
     public Game(IBoardGenerator boardGenerator, IPlayer player)
     {
-        throw new NotImplementedException();
+        boardGenerator.GenerateBoard();
+        Player = player;
+    }
+    public void RevealTile_FirstTile_ShouldStartTimer()
+    {
+        StartTime = DateTime.Now;
     }
 
     public void RevealTile(int row, int column)
     {
-        throw new NotImplementedException();
+       
     }
 
     public void FlagTile(int row, int column)
