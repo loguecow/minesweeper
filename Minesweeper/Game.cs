@@ -10,10 +10,11 @@ public class Game
     public IPlayer Player { get; set; }
 
     private bool IsFirstTileRevealed { get; set; } = false;
+    private Board _board { get; set; }
 
     public Game(IBoardGenerator boardGenerator, IPlayer player)
     {
-        boardGenerator.GenerateBoard();
+        _board = boardGenerator.GenerateBoard();
         Player = player;
     }
     public void RevealTile_FirstTile_ShouldStartTimer()
@@ -23,12 +24,22 @@ public class Game
 
     public void RevealTile(int row, int column)
     {
-       
+        if (IsFirstTileRevealed == false)
+        {
+            RevealTile_FirstTile_ShouldStartTimer();
+            IsFirstTileRevealed = true;
+        }
+        if (_board.Tiles[row, column].IsMine)
+        {
+            EndTime = DateTime.Now;
+            throw new MineExplodedException();
+        }
+        _board.RevealTile(row, column);
     }
 
     public void FlagTile(int row, int column)
     {
-        throw new NotImplementedException();
+        _board.FlagTile(row, column);
     }
 
     public double GetSecondsUsed()
