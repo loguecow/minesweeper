@@ -21,6 +21,7 @@ public class Board
     public int Columns { get; private set; } = 0;
     public int Rows { get; private set; } = 0;
     public int CorrectlyFlaggedTiles { get; private set; } = 0;
+    public int IsreavealedTiles { get; private set; } = 0;
 
     public void FlagTile(int row, int column)
     {
@@ -53,6 +54,9 @@ public class Board
         }
 
         Tiles[row,column].IsRevealed = true;
+        IsreavealedTiles++;
+        
+        OnlyRemainingMines();
 
         (int Row, int Column)[] adjacentTileReferences = GetAdjacentTileReferences(row, column);
         Tiles[row, column].AdjacentMines = CountAdjacentMines(adjacentTileReferences);
@@ -61,6 +65,21 @@ public class Board
             RevealAdjacentTiles(adjacentTileReferences);
 
     }
+
+    private int totalTiles()
+    {
+        return Rows * Columns;
+    }
+    private void OnlyRemainingMines()
+    {
+        int _totalTiles = totalTiles();
+        int unrevealedTiles = _totalTiles - IsreavealedTiles;
+        if (unrevealedTiles == Mines)
+        {
+            GameWon = true;
+        }
+    }
+
     private void RevealAdjacentTiles((int Row, int Column)[] adjacentTileReferences)
     {
     foreach ((int Row, int Column) tileReference in adjacentTileReferences)
