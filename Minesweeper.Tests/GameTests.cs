@@ -37,13 +37,15 @@ public class GameTests
     }
 
     [Fact]
-    public async Task FlagTile_AllTilesCorrectlyFlagged_GameWon()
+    public async Task GetSecondsUsed_AllTilesCorrectlyFlagged_GameWon()
     {
         IBoardGenerator boardGenerator = new StaticBoardGenerator(BOARD_DEFINITION);
         Game game = new(boardGenerator, new Player());
 
-        game.FlagTile(0, 6);
+        game.RevealTile(0, 0);
         await Task.Delay(1000);
+
+        game.FlagTile(0, 6);
         game.FlagTile(1, 2);
         game.FlagTile(1, 3);
         game.FlagTile(2, 6);

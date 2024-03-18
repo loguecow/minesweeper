@@ -8,6 +8,7 @@ public class Game
     public DateTime? StartTime { get; private set; } = null;
     public DateTime? EndTime { get; private set; } = null;
     public IPlayer Player { get; set; }
+    public Board Board { get; set; }
 
     public Game(IBoardGenerator boardGenerator, IPlayer player)
     {
@@ -25,6 +26,11 @@ public class Game
     }
 
     public double GetSecondsUsed()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void UnflagTile(int row, int column)
     {
         throw new NotImplementedException();
     }
