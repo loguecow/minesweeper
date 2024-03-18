@@ -41,12 +41,12 @@ public class Game
     {
         _board.FlagTile(row, column);
     }
-
+ 
 public double GetSecondsUsed()
 {
         DateTime now = DateTime.Now;
-        DateTime baseTime = StartTime ?? DateTime.MinValue;
-        double seconds = (now - baseTime).TotalSeconds;
+        DateTime _startTime = StartTime ?? DateTime.MinValue;
+        double seconds = (now - _startTime).TotalSeconds;
         return seconds;
 }
 }
