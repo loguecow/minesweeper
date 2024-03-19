@@ -43,6 +43,8 @@ public class GameTests
         Game game = new(boardGenerator, new Player());
 
         game.RevealTile(0, 0);
+        game.FlagTile(0, 6);
+
         await Task.Delay(1000);
 
         game.FlagTile(0, 6);
