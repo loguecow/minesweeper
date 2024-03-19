@@ -11,11 +11,16 @@ public class Game
 
     private bool IsFirstTileRevealed { get; set; } = false;
     private Board _board { get; set; }
+    public object Board { get; set; }
+    public int Rows { get; private set; }
+    public int Columns { get; private set; }
 
-    public Game(IBoardGenerator boardGenerator, IPlayer player)
+    public Game(IBoardGenerator boardGenerator, IPlayer player, int rows, int columns)
     {
         _board = boardGenerator.GenerateBoard();
         Player = player;
+        Rows = rows;
+        Columns = columns;
     }
     public void RevealTile_FirstTile_ShouldStartTimer()
     {
@@ -40,6 +45,10 @@ public class Game
     public void FlagTile(int row, int column)
     {
         _board.FlagTile(row, column);
+    }
+    public void UnflagTile(int row, int column)
+    {
+        _board.UnflagTile(row, column);
     }
  
 public double GetSecondsUsed()
