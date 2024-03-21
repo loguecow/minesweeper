@@ -4,18 +4,64 @@ namespace Minesweeper.Implementation;
 
 public class RandomBoardGenerator : IBoardGenerator
 {
+        private readonly int _rows;
+        private readonly int _columns;
+        private readonly int _mines;
     public RandomBoardGenerator(int rows, int columns, int mines)
     {
-        throw new NotImplementedException();
+        _rows = rows;
+        _columns = columns;
+        _mines = mines;
     }
 
     public RandomBoardGenerator(Level level)
     {
-        throw new NotImplementedException();
+        switch (level)
+        {
+                case Level.Beginner:
+                    _rows = 9;
+                    _columns = 9;
+                    _mines = 10;
+                    break;
+                case Level.Intermediate:
+                    _rows = 18;
+                    _columns = 18;
+                    _mines = 15;
+                    break;
+                case Level.Expert:
+                    _rows = 60;
+                    _columns = 60;
+                    _mines = 90;
+                    break;
+        }
+        
     }
 
-    public Board GenerateBoard()
+public Board GenerateBoard()
+{
+    var board = new Board(_rows, _columns,_mines);
+    var random = new Random();
+
+    for (int i = 0; i < _rows; i++)
     {
-        throw new NotImplementedException();
+        for (int j = 0; j < _columns; j++)
+        {
+            board.Tiles[i, j] = new Tile(false);
+        }
     }
+
+    for (int i = 0; i < _mines; i++)
+    {
+        int row, column;
+        do
+        {
+            row = random.Next(_rows);
+            column = random.Next(_columns);
+        } while (board.Tiles[row, column].IsMine);
+
+        board.PlaceMine(row, column);
+    }
+
+    return board;
+}
 }

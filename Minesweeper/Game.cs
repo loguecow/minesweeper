@@ -10,17 +10,17 @@ public class Game
     public IPlayer Player { get; set; }
 
     private bool IsFirstTileRevealed { get; set; } = false;
-    private Board _board { get; set; }
-    public object Board { get; set; }
+    public Board _board { get; set; }
+    public Board? Board { get; set; }
     public int Rows { get; private set; }
     public int Columns { get; private set; }
 
-    public Game(IBoardGenerator boardGenerator, IPlayer player, int rows, int columns)
+    public Game(IBoardGenerator boardGenerator, IPlayer player)
     {
         _board = boardGenerator.GenerateBoard();
         Player = player;
-        Rows = rows;
-        Columns = columns;
+        Rows = _board.Rows;
+        Columns = _board.Columns;
     }
     public void RevealTile_FirstTile_ShouldStartTimer()
     {

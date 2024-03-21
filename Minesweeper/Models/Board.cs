@@ -79,6 +79,10 @@ public class Board
             GameWon = true;
         }
     }
+    public void PlaceMine(int row, int column)
+    {
+        Tiles[row,column].IsMine = true;
+    }
 
     private void RevealAdjacentTiles((int Row, int Column)[] adjacentTileReferences)
     {
