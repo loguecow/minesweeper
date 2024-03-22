@@ -11,7 +11,6 @@ public class Game
 
     private bool IsFirstTileRevealed { get; set; } = false;
     public Board _board { get; set; }
-    public Board? Board { get; set; }
     public int Rows { get; private set; }
     public int Columns { get; private set; }
 

@@ -17,7 +17,7 @@ public class GameManager
     {
         IBoardGenerator randomBoardGenerator = new RandomBoardGenerator(level);
         Game game = new(randomBoardGenerator, player);
-
+    
         _memoryCache.Set(game.Id, game);
 
         return game;
@@ -25,11 +25,19 @@ public class GameManager
 
     public void SaveGame(Game game)
     {
-        throw new NotImplementedException();
+        _memoryCache.Set(game.Id, game);
     }
 
     public Game LoadGame(Guid gameId)
     {
-        throw new NotImplementedException();
+        var game = _memoryCache.Get<Game>(gameId);
+        if (game != null)
+        {
+            return game;
+        }
+        else
+        {
+            return CreateNewGame(new Player(), Level.Beginner);
+        }
     }
 }
