@@ -30,14 +30,13 @@ public class GameManager
 
     public Game LoadGame(Guid gameId)
     {
-        var game = _memoryCache.Get<Game>(gameId);
-        if (game != null)
+        if (_memoryCache.TryGetValue(gameId, out Game game))
         {
             return game;
         }
         else
         {
-            return CreateNewGame(new Player(), Level.Beginner);
+            return null;
         }
     }
 }
