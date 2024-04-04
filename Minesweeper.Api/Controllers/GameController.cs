@@ -6,7 +6,7 @@ using Minesweeper.Api.Models;
 namespace Minesweeper.Api.Controllers;
 [ApiController]
 [Route("games")]
-[EnableCors("AllowAllOrigins")]
+[EnableCors("AllowAnyOrigin")]
 public class GameController : ControllerBase
 {
     private readonly GameManager _gameManager;
