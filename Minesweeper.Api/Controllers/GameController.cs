@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Minesweeper.Api.Mappers;
 using Minesweeper.Api.Models;
@@ -5,6 +6,7 @@ using Minesweeper.Api.Models;
 namespace Minesweeper.Api.Controllers;
 [ApiController]
 [Route("games")]
+[EnableCors("AllowAllOrigins")]
 public class GameController : ControllerBase
 {
     private readonly GameManager _gameManager;
