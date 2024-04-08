@@ -1,5 +1,5 @@
-@HostAddress = https://localhost:32768
-@GameId = c5f73e7d-2dbf-446c-9ed7-71c0094973ba
+@HostAddress = http://localhost:5008
+@GameId = d7e48bb2-71eb-480e-9e3a-fa1aa209c263
 
 ### Create new game
 POST {{HostAddress}}/games/
