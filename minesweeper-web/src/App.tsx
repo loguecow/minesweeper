@@ -7,6 +7,7 @@ import { ApiResponse, Tile } from './models';
 import { RiCheckboxBlankFill } from "react-icons/ri";
 import { FaFlag } from "react-icons/fa";
 import { Fa1, Fa2, Fa3, Fa4, Fa5, Fa6, Fa7, Fa8 } from "react-icons/fa6";
+import { GiMineExplosion } from "react-icons/gi";
 
 function App() {
   const [apiResponse, setApiResponse] = useState<ApiResponse | null>(null);
@@ -37,24 +38,6 @@ function App() {
     .catch(error => setApiResponse(error.toString()));
   };
   
-  const MakeMove = () => {
-
-    const MoveData = 
-    {
-      row: 0,
-      column: 2,
-      move: 0
-    };
-    axios.put<ApiResponse>(`${API_HOST}/games/${gameId}`, MoveData)
-    .then(response => response.data)
-    .then(data => {
-      setApiResponse(data);
-      if (data.board && data.board.tiles) {
-        setTileData(data.board.tiles);
-      }
-    })
-    .catch(error => setApiResponse(error.toString()));
-  };
   const revealTile = (row: number, column: number) => {
     const MoveData = 
     {
@@ -97,6 +80,27 @@ function App() {
     .catch(error => setApiResponse(error.toString()));
   };
 
+  const unflagTile = (row: number, column: number) => {
+    const MoveData = 
+    {
+      row: row,
+      column: column,
+      move: 2
+    };
+    axios.put<ApiResponse>(`${API_HOST}/games/${gameId}`, MoveData)
+    .then(response => response.data)
+    .then(data => {
+      setApiResponse(data); // Update and display the new data
+      if (data.board && data.board.tiles) {
+        setTileData([]); // Clear the old tile data
+        for (let tile of data.board.tiles) {
+          setTileData(prevData => [...prevData, tile]);
+        }
+      }
+    })
+    .catch(error => setApiResponse(error.toString()));
+  };
+
   function getIconForAdjacentMines(adjacentMines: number) {
     switch (adjacentMines) {
       case 1:
@@ -119,6 +123,27 @@ function App() {
         return <RiCheckboxBlankFill />;
     }
   }
+
+  let _rows, _columns;
+
+  switch(level) {
+    case 0:
+      _rows = 9;
+      _columns = 9;
+      break;
+    case 1:
+      _rows = 18;
+      _columns = 18;
+      break;
+    case 2:
+      _rows = 60;
+      _columns = 60;
+      break;
+    default:
+      _rows = 9;
+      _columns = 9;
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -131,24 +156,48 @@ function App() {
         <option value={2}>Expert</option>
       </select>
         <button onClick={CreateNewGame}>Create game</button>
-        <button onClick={MakeMove}>Make move test</button>
 
         <pre>{apiResponse?.gameId}</pre>
-        <pre>{apiResponse?.mineExploded}</pre>
+        {apiResponse?.mineExploded && <div><GiMineExplosion/><br/>Mine Exploded</div>}
         <table>
           <tbody>
-            <div className='grid'>
+          <div className='grid' style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${_columns}, 1fr)`,
+          gridTemplateRows: `repeat(${_rows}, 1fr)`,
+          gap: '1px',
+          overflow: 'hidden'
+        }}>
 
             {tileData.map((tile, index) => (
             <tr key={index}>
               <a 
               onDrag={(event) => event.preventDefault()}
-              onClick={() => revealTile(tile.row, tile.col)}
-              onContextMenu={(event) => {
+              onMouseDown={(event) => {
                 event.preventDefault();
-                flagTile(tile.row, tile.col);
+                if (apiResponse?.mineExploded) {
+                  console.log('Game Over');
+                  return;
+                }
+                if (event.button === 0) {
+                  if (!tile.isFlagged) {
+                    revealTile(tile.row, tile.col);
+                  }
+                } else if (event.button === 2) {
+                  if (tile.isFlagged) {
+                    unflagTile(tile.row, tile.col);
+                  } else {
+                    flagTile(tile.row, tile.col);
+                  }
+                }
               }}
-              style={{border: '1px solid black', width: '16px', height: '16px',backgroundColor: tile.exploded ? 'red' : (tile.isRevealed ? 'green' : 'white')}}>
+              onContextMenu={(event) => event.preventDefault()}
+              style={{
+                border: '1px solid black',
+                borderRadius: '3px',
+                width: '16px', 
+                height: '16px',
+                backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? 'blue' : (tile.isRevealed ? 'green' : 'white'))}}>
               {tile.isFlagged ? <FaFlag /> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : <RiCheckboxBlankFill />)}
               </a>
             </tr>
