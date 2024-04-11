@@ -160,9 +160,9 @@ function App() {
   const minesLeft = _mines - flaggedTiles;
 
   const checkVictory = () => {
-    const totalTiles = _rows * _columns; // total number of tiles
-    const totalMines = _mines; // total number of mines
-    const revealedTiles = tileData.filter(tile => tile.isRevealed).length; // number of revealed tiles
+    const totalTiles = _rows * _columns;
+    const totalMines = _mines;
+    const revealedTiles = tileData.filter(tile => tile.isRevealed).length;
   
     if (revealedTiles >= totalTiles - totalMines) {
       setGameWon(true)
