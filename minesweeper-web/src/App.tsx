@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import deadlogo from './nahh-nah.gif'
 
 import { ApiResponse, Tile } from './models';
 
@@ -21,6 +22,7 @@ function App() {
 
   const CreateNewGame = () => {
     setApiResponse(null);
+    setGameWon(false)
     setTileData([]);
     const data = 
     {
@@ -82,7 +84,6 @@ function App() {
         for (let tile of data.board.tiles) {
           setTileData(prevData => [...prevData, tile]);
         }
-        checkVictory()
       }
     })
     .catch(error => setApiResponse(error.toString()));
@@ -104,7 +105,6 @@ function App() {
         for (let tile of data.board.tiles) {
           setTileData(prevData => [...prevData, tile]);
         }
-        checkVictory()
       }
     })
     .catch(error => setApiResponse(error.toString()));
@@ -164,7 +164,7 @@ function App() {
     const totalMines = _mines;
     const revealedTiles = tileData.filter(tile => tile.isRevealed).length;
   
-    if (revealedTiles >= totalTiles - totalMines) {
+    if (revealedTiles === totalTiles - totalMines) {
       setGameWon(true)
     }
   };
@@ -172,6 +172,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <div className='game'>
         <p>
           Minesweeep
         </p>
@@ -185,7 +186,7 @@ function App() {
         <pre>{apiResponse?.gameId}</pre>
         {apiResponse?.board != null && <div>Mines left: {minesLeft}</div>}
         {gameWon && <div>Game Won!</div>}
-        {apiResponse?.mineExploded && <div><GiMineExplosion/><br/>Mine Exploded</div>}
+        {apiResponse?.mineExploded && <div><GiMineExplosion/><br/>Mine Exploded<br/><img src={deadlogo}/></div>}
         <table>
           <tbody>
           <div className='grid' style={{
@@ -217,6 +218,7 @@ function App() {
                     flagTile(tile.row, tile.col);
                   }
                 }
+                checkVictory();
               }}
               onContextMenu={(event) => event.preventDefault()}
               style={{
@@ -232,6 +234,7 @@ function App() {
             </div>
           </tbody>
         </table>
+        </div>
       </header>
     </div>
   );
