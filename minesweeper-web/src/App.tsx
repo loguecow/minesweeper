@@ -14,6 +14,8 @@ function App() {
   const [tileData, setTileData] = useState<Tile[]>([]);
   const [level, setLevel] = useState(0);
   const [gameId, setGameId] = useState<string | null>(null);
+  const [gameWon, setGameWon] = useState(false);
+
 
   const API_HOST = 'http://localhost:5008';
 
@@ -60,6 +62,11 @@ function App() {
   };
 
   const flagTile = (row: number, column: number) => {
+
+    const tile = tileData.find(tile => tile.row === row && tile.col === column);
+    if (tile && tile.isRevealed) {
+      return;
+    }
     const MoveData = 
     {
       row: row,
@@ -75,6 +82,7 @@ function App() {
         for (let tile of data.board.tiles) {
           setTileData(prevData => [...prevData, tile]);
         }
+        checkVictory()
       }
     })
     .catch(error => setApiResponse(error.toString()));
@@ -96,6 +104,7 @@ function App() {
         for (let tile of data.board.tiles) {
           setTileData(prevData => [...prevData, tile]);
         }
+        checkVictory()
       }
     })
     .catch(error => setApiResponse(error.toString()));
@@ -124,25 +133,41 @@ function App() {
     }
   }
 
-  let _rows, _columns;
-
+  let _rows: number, _columns: number, _mines: number ;
+  const flaggedTiles = tileData.filter(tile => tile.isFlagged).length;
   switch(level) {
     case 0:
       _rows = 9;
       _columns = 9;
+      _mines = 10;
       break;
-    case 1:
-      _rows = 18;
-      _columns = 18;
-      break;
-    case 2:
-      _rows = 60;
-      _columns = 60;
-      break;
-    default:
-      _rows = 9;
-      _columns = 9;
-  }
+      case 1:
+        _rows = 18;
+        _columns = 18;
+        _mines = 15;
+        break;
+        case 2:
+          _rows = 60;
+          _columns = 60;
+          _mines = 90;
+          break;
+          default:
+            _rows = 9;
+            _columns = 9;
+            _mines = 10;
+          }
+          
+  const minesLeft = _mines - flaggedTiles;
+
+  const checkVictory = () => {
+    const totalTiles = _rows * _columns; // total number of tiles
+    const totalMines = _mines; // total number of mines
+    const revealedTiles = tileData.filter(tile => tile.isRevealed).length; // number of revealed tiles
+  
+    if (revealedTiles >= totalTiles - totalMines) {
+      setGameWon(true)
+    }
+  };
 
   return (
     <div className="App">
@@ -158,6 +183,8 @@ function App() {
         <button onClick={CreateNewGame}>Create game</button>
 
         <pre>{apiResponse?.gameId}</pre>
+        {apiResponse?.board != null && <div>Mines left: {minesLeft}</div>}
+        {gameWon && <div>Game Won!</div>}
         {apiResponse?.mineExploded && <div><GiMineExplosion/><br/>Mine Exploded</div>}
         <table>
           <tbody>
