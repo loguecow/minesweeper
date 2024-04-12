@@ -9,6 +9,7 @@ import { RiCheckboxBlankFill } from "react-icons/ri";
 import { FaFlag } from "react-icons/fa";
 import { Fa1, Fa2, Fa3, Fa4, Fa5, Fa6, Fa7, Fa8 } from "react-icons/fa6";
 import { GiMineExplosion } from "react-icons/gi";
+import { VscBlank } from "react-icons/vsc";
 
 function App() {
   const [apiResponse, setApiResponse] = useState<ApiResponse | null>(null);
@@ -189,49 +190,47 @@ function App() {
         {apiResponse?.mineExploded && <div><GiMineExplosion/><br/>Mine Exploded<br/><img src={deadlogo}/></div>}
         <table>
           <tbody>
-          <div className='grid' style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${_columns}, 1fr)`,
-          gridTemplateRows: `repeat(${_rows}, 1fr)`,
-          gap: '1px',
-          overflow: 'hidden'
-        }}>
-
-            {tileData.map((tile, index) => (
-            <tr key={index}>
-              <a 
-              onDrag={(event) => event.preventDefault()}
-              onMouseDown={(event) => {
-                event.preventDefault();
-                if (apiResponse?.mineExploded) {
-                  console.log('Game Over');
-                  return;
-                }
-                if (event.button === 0) {
-                  if (!tile.isFlagged) {
-                    revealTile(tile.row, tile.col);
-                  }
-                } else if (event.button === 2) {
-                  if (tile.isFlagged) {
-                    unflagTile(tile.row, tile.col);
-                  } else {
-                    flagTile(tile.row, tile.col);
-                  }
-                }
-                checkVictory();
-              }}
-              onContextMenu={(event) => event.preventDefault()}
-              style={{
-                border: '1px solid black',
-                borderRadius: '3px',
-                width: '16px', 
-                height: '16px',
-                backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? 'blue' : (tile.isRevealed ? 'green' : 'white'))}}>
-              {tile.isFlagged ? <FaFlag /> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : <RiCheckboxBlankFill />)}
-              </a>
-            </tr>
-          ))}
-            </div>
+            {Array.from({ length: _rows }, (_, rowIndex) => (
+              <tr key={rowIndex}>
+                {Array.from({ length: _columns }, (_, colIndex) => {
+                  const tile = tileData.find(t => t.row === rowIndex && t.col === colIndex);
+                  return tile ? (
+                    <td key={colIndex}>
+                      <a 
+                        onDrag={(event) => event.preventDefault()}
+                        onMouseDown={(event) => {
+                          event.preventDefault();
+                          if (apiResponse?.mineExploded) {
+                            console.log('Game Over');
+                            return;
+                          }
+                          if (event.button === 0) {
+                            if (!tile.isFlagged) {
+                              revealTile(tile.row, tile.col);
+                            }
+                          } else if (event.button === 2) {
+                            if (tile.isFlagged) {
+                              unflagTile(tile.row, tile.col);
+                            } else {
+                              flagTile(tile.row, tile.col);
+                            }
+                          }
+                          checkVictory();
+                        }}
+                        onContextMenu={(event) => event.preventDefault()}
+                        style={{
+                          border: '1px solid white',
+                          width: '16px', 
+                          height: '16px',
+                          backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#949494' : (tile.isRevealed ? '#949494' : 'white'))}}
+                      >
+                        {tile.isFlagged ? <FaFlag color="red"/> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : <VscBlank />)}
+                      </a>
+                    </td>
+                  ) : null;
+                })}
+              </tr>
+            ))}
           </tbody>
         </table>
         </div>
