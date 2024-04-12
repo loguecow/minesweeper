@@ -171,23 +171,27 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <div className='game'>
+    <div className="Game">
+        <header className='game-menu'>
         <p>
           Minesweeep
         </p>
-        <select value={level} onChange={(e) => setLevel(Number(e.target.value))}>
+        <select value={level} onChange={(e) => {
+          setLevel(Number(e.target.value))
+          CreateNewGame()
+          }}>
         <option value={0}>Beginner</option>
         <option value={1}>Intermediate</option>
         <option value={2}>Expert</option>
       </select>
-        <button onClick={CreateNewGame}>Create game</button>
+        <button onClick={CreateNewGame}>Create new game</button>
 
         <pre>{apiResponse?.gameId}</pre>
         {apiResponse?.board != null && <div>Mines left: {minesLeft}</div>}
         {gameWon && <div>Game Won!</div>}
         {apiResponse?.mineExploded && <div><GiMineExplosion/><br/>Mine Exploded<br/><img src={deadlogo}/></div>}
+        </header>
+        <div className='Board'>
         <table>
           <tbody>
             {Array.from({ length: _rows }, (_, rowIndex) => (
@@ -222,7 +226,7 @@ function App() {
                           border: '1px solid white',
                           width: '16px', 
                           height: '16px',
-                          backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#949494' : (tile.isRevealed ? '#949494' : 'white'))}}
+                          backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#ddd' : (tile.isRevealed ? '#ddd' : 'white'))}}
                       >
                         {tile.isFlagged ? <FaFlag color="red"/> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : <VscBlank />)}
                       </a>
@@ -234,7 +238,6 @@ function App() {
           </tbody>
         </table>
         </div>
-      </header>
     </div>
   );
 }

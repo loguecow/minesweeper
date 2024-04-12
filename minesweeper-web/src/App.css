@@ -1,20 +1,26 @@
-.App {
+.Game {
   text-align: center;
-}
-
-.App-header {
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-.App-header .game{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  display: flex;
-  background-color: #C2B28F;
+}
+
+.game-menu {
+  background-color: #ddd;
   padding: 10px;
+  width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.Board {
+  align-items: center; 
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+table {
+  background-color: #949494;
 }
