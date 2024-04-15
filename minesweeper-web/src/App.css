@@ -21,6 +21,24 @@
   margin: 0 auto;
 }
 
-table {
-  background-color: #949494;
+
+td {
+  border: none;
+  background-color: white;
+  border: 1px solid rgb(34, 31, 104)
+}
+tbody{
+  border: 1px solid red
+
+}
+table{
+  border-collapse: separate; 
+  border-spacing: 0;
+  border: 1px solid rgb(34, 31, 104)
+}
+
+a {
+  display: flex;
+  width: 16px;
+  height: 16px;
 }

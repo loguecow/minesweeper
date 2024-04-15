@@ -114,21 +114,21 @@ function App() {
   function getIconForAdjacentMines(adjacentMines: number) {
     switch (adjacentMines) {
       case 1:
-        return <Fa1 />;
+        return <Fa1  color='blue'/>;
       case 2:
-        return <Fa2/>;
+        return <Fa2 color='green'/>;
       case 3:
-        return <Fa3/>;
+        return <Fa3 color='red'/>;
       case 4:
-        return <Fa4/>;
+        return <Fa4 color='darkblue'/>;
       case 5:
-        return <Fa5/>;
+        return <Fa5 color='brown'/>;
       case 6:
-        return <Fa6/>;
+        return <Fa6 color='cyan'/>;
       case 7:
-        return <Fa7/>;
+        return <Fa7 color='black'/>;
       case 8:
-        return <Fa8/>;
+        return <Fa8 color='grey'/>;
       default:
         return <RiCheckboxBlankFill />;
     }
@@ -223,9 +223,6 @@ function App() {
                         }}
                         onContextMenu={(event) => event.preventDefault()}
                         style={{
-                          border: '1px solid white',
-                          width: '16px', 
-                          height: '16px',
                           backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#ddd' : (tile.isRevealed ? '#ddd' : 'white'))}}
                       >
                         {tile.isFlagged ? <FaFlag color="red"/> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : <VscBlank />)}
