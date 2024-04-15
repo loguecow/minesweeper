@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import deadlogo from './nahh-nah.gif'
@@ -13,13 +13,20 @@ import { VscBlank } from "react-icons/vsc";
 
 function App() {
   const [apiResponse, setApiResponse] = useState<ApiResponse | null>(null);
+  const [gameData, setGameData] = useState<ApiResponse[] | null>(null);
   const [tileData, setTileData] = useState<Tile[]>([]);
   const [level, setLevel] = useState(0);
   const [gameId, setGameId] = useState<string | null>(null);
   const [gameWon, setGameWon] = useState(false);
+  const [rows, setRows] = useState<number>(9); // Default number of rows
+  const [columns, setColumns] = useState<number>(9); // Default number of columns
 
 
   const API_HOST = 'http://localhost:5008';
+
+  useEffect(() => {
+    CreateNewGame();
+  }, [level]);
 
   const CreateNewGame = () => {
     setApiResponse(null);
@@ -38,6 +45,10 @@ function App() {
       setGameId(data.gameId)
       if (data.board && data.board.tiles) {
         setTileData(data.board.tiles); // Set tileData to the new tiles
+        const maxRow = Math.max(...data.board.tiles.map(tile => tile.row));
+        const maxCol = Math.max(...data.board.tiles.map(tile => tile.col));
+        setRows(maxRow + 1);
+        setColumns(maxCol + 1);
       }
     })
     .catch(error => setApiResponse(error.toString()));
@@ -130,38 +141,30 @@ function App() {
       case 8:
         return <Fa8 color='grey'/>;
       default:
-        return <RiCheckboxBlankFill />;
+        return null;
     }
   }
 
-  let _rows: number, _columns: number, _mines: number ;
+  let _mines: number ;
   const flaggedTiles = tileData.filter(tile => tile.isFlagged).length;
   switch(level) {
     case 0:
-      _rows = 9;
-      _columns = 9;
       _mines = 10;
       break;
       case 1:
-        _rows = 18;
-        _columns = 18;
         _mines = 15;
         break;
         case 2:
-          _rows = 60;
-          _columns = 60;
           _mines = 90;
           break;
           default:
-            _rows = 9;
-            _columns = 9;
             _mines = 10;
           }
           
   const minesLeft = _mines - flaggedTiles;
 
   const checkVictory = () => {
-    const totalTiles = _rows * _columns;
+    const totalTiles = rows * columns;
     const totalMines = _mines;
     const revealedTiles = tileData.filter(tile => tile.isRevealed).length;
   
@@ -194,44 +197,45 @@ function App() {
         <div className='Board'>
         <table>
           <tbody>
-            {Array.from({ length: _rows }, (_, rowIndex) => (
-              <tr key={rowIndex}>
-                {Array.from({ length: _columns }, (_, colIndex) => {
-                  const tile = tileData.find(t => t.row === rowIndex && t.col === colIndex);
-                  return tile ? (
-                    <td key={colIndex}>
-                      <a 
-                        onDrag={(event) => event.preventDefault()}
-                        onMouseDown={(event) => {
-                          event.preventDefault();
-                          if (apiResponse?.mineExploded) {
-                            console.log('Game Over');
-                            return;
-                          }
-                          if (event.button === 0) {
-                            if (!tile.isFlagged) {
-                              revealTile(tile.row, tile.col);
-                            }
-                          } else if (event.button === 2) {
-                            if (tile.isFlagged) {
-                              unflagTile(tile.row, tile.col);
-                            } else {
-                              flagTile(tile.row, tile.col);
-                            }
-                          }
-                          checkVictory();
-                        }}
-                        onContextMenu={(event) => event.preventDefault()}
-                        style={{
-                          backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#ddd' : (tile.isRevealed ? '#ddd' : 'white'))}}
-                      >
-                        {tile.isFlagged ? <FaFlag color="red"/> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : <VscBlank />)}
-                      </a>
-                    </td>
-                  ) : null;
-                })}
-              </tr>
-            ))}
+          {Array.from({ length: rows }, (_, rowIndex) => (
+            <tr key={rowIndex}>
+              {Array.from({ length: columns }, (_, colIndex) => {
+                const tile = tileData.find(t => t.row === rowIndex && t.col === colIndex);
+                return tile ? (
+                  <td 
+                    key={colIndex}
+                    onDrag={(event) => event.preventDefault()}
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      if (apiResponse?.mineExploded) {
+                        console.log('Game Over');
+                        return;
+                      }
+                      if (event.button === 0) {
+                        if (!tile.isFlagged) {
+                          revealTile(tile.row, tile.col);
+                        }
+                      } else if (event.button === 2) {
+                        if (tile.isFlagged) {
+                          unflagTile(tile.row, tile.col);
+                        } else {
+                          flagTile(tile.row, tile.col);
+                        }
+                      }
+                      checkVictory();
+                    }}
+                    onContextMenu={(event) => event.preventDefault()}
+                    style={{
+                      backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#ddd' : (tile.isRevealed ? '#ddd' : 'white'))}}
+                  >
+                    <div id='tile'>
+                      {tile.isFlagged ? <FaFlag color="red"/> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : null)}
+                    </div>
+                  </td>
+                ) : null;
+              })}
+            </tr>
+          ))}
           </tbody>
         </table>
         </div>
