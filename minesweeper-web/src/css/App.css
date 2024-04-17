@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "MS Sans Serif";
+  src: url("./micross.ttf");
+}
+@font-face {
+  font-family: "Digital Dismay";
+  src: url("./digital-dismay.otf") format("truetype");
+}
+
 html{
 }
 .Game {
@@ -11,6 +20,7 @@ html{
 }
 
 .game-menu {
+  font-family: "MS Sans Serif";
   background-color: #f0f0f0;
   text-align: center;
   padding: 10px;
@@ -55,6 +65,7 @@ td:hover{
   background-color: rgb(196, 196, 196);
 }
 .flagleft{
+  font-family: "Digital Dismay";
   background-color: black;
   font-size: large;
   color: red;
@@ -67,6 +78,7 @@ td:hover{
   flex: 1;
 }
 .timer{
+  font-family: "Digital Dismay";
   background-color: black;
   font-size: large;
   color: red;

@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import './App.css';
+import './css/App.css';
 import deadlogo from './img/faceexploded.gif'
 import faceClicked from './img/faceclicked.gif'
 import faceWon from './img/facewon.gif'
+import exploded from './img/exploded.gif'
 
 import { ApiResponse, Tile } from './models';
 
@@ -290,6 +291,7 @@ function App() {
                     style={{
                       backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#ddd' : (tile.isRevealed ? '#ddd' : 'white'))}}
                   >
+                    {apiResponse?.mineExploded && <img src={exploded} style={{width: 16, height: 16}} alt="explosion" />}
                     <div id='tile'>
                       {tile.isFlagged ? <FaFlag color="red"/> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : null)}
                     </div>
