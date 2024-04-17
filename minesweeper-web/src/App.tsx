@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import './App.css';
-import deadlogo from './nahh-nah.gif'
+import deadlogo from './img/faceexploded.gif'
+import faceClicked from './img/faceclicked.gif'
+import faceWon from './img/facewon.gif'
 
 import { ApiResponse, Tile } from './models';
 
@@ -20,6 +22,9 @@ function App() {
   const [gameWon, setGameWon] = useState(false);
   const [rows, setRows] = useState<number>(9); // Default number of rows
   const [columns, setColumns] = useState<number>(9); // Default number of columns
+  const [face, setFace] = useState('normal');
+  const [seconds, setSeconds] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
 
   const API_HOST = 'http://localhost:5008';
@@ -27,9 +32,19 @@ function App() {
   useEffect(() => {
     CreateNewGame();
   }, [level]);
+  
+  
+  useEffect(() => {
+    checkVictory();
+  }, [apiResponse]);
+  
+
 
   const CreateNewGame = () => {
+    stopTimer();
+    setSeconds(0);
     setApiResponse(null);
+    setFace('normal')
     setGameWon(false)
     setTileData([]);
     const data = 
@@ -55,6 +70,9 @@ function App() {
   };
   
   const revealTile = (row: number, column: number) => {
+    if (!intervalRef.current) {
+      startTimer();
+    }
     const MoveData = 
     {
       row: row,
@@ -69,6 +87,14 @@ function App() {
         setTileData([]); // Clear the old tile data
         for (let tile of data.board.tiles) {
           setTileData(prevData => [...prevData, tile]);
+        }
+        if (data.mineExploded) {
+          setFace('exploded');
+          stopTimer();
+        } else if (gameWon) {
+          setFace('won');
+        } else {
+          setFace('normal');
         }
       }
     })
@@ -169,33 +195,68 @@ function App() {
     const revealedTiles = tileData.filter(tile => tile.isRevealed).length;
   
     if (revealedTiles === totalTiles - totalMines) {
-      setGameWon(true)
+      setGameWon(true);
+      stopTimer();
+      setFace('won');
     }
   };
 
+  let faceImage;
+  switch (face) {
+    case 'normal':
+      faceImage = 'https://freeminesweeper.org/images/facesmile.gif';
+      break;
+    case 'clicked':
+      faceImage = faceClicked;
+      break;
+    case 'exploded':
+      faceImage = deadlogo;
+      break;
+    case 'won':
+      faceImage = faceWon;
+      break;
+  }
+
+  const startTimer = () => {
+    if (intervalRef.current !== null) return; // Timer already started
+    intervalRef.current = setInterval(() => {
+      setSeconds(seconds => seconds + 1);
+    }, 1000);
+  };
+  const stopTimer = () => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+  
   return (
     <div className="Game">
-        <header className='game-menu'>
-        <p>
-          Minesweeep
-        </p>
-        <select value={level} onChange={(e) => {
-          setLevel(Number(e.target.value))
-          CreateNewGame()
-          }}>
-        <option value={0}>Beginner</option>
-        <option value={1}>Intermediate</option>
-        <option value={2}>Expert</option>
-      </select>
-        <button onClick={CreateNewGame}>Create new game</button>
-
-        <pre>{apiResponse?.gameId}</pre>
-        {apiResponse?.board != null && <div>Mines left: {minesLeft}</div>}
-        {gameWon && <div>Game Won!</div>}
-        {apiResponse?.mineExploded && <div><GiMineExplosion/><br/>Mine Exploded<br/><img src={deadlogo}/></div>}
-        </header>
         <div className='Board'>
         <table>
+              <thead>
+            <tr>
+              <th colSpan={columns}>
+                <header className="game-menu">
+                  <p>Minesweeep</p>
+                  <select value={level} onChange={(e) => {
+                    setLevel(Number(e.target.value))
+                    CreateNewGame()
+                  }}>
+                    <option value={0}>Beginner</option>
+                    <option value={1}>Intermediate</option>
+                    <option value={2}>Expert</option>
+                  </select>
+                  <div style={{display: 'flex'}}>
+                  {apiResponse?.board != null && <div className='timer'>{seconds}</div>}
+                  <div className='faceImage'><a onClick={CreateNewGame}><img src={faceImage}/></a></div>
+                  {apiResponse?.board != null && <div className='flagleft'>{minesLeft}</div>}
+                  </div>
+                  {gameWon && <div>Game Won!</div>}
+                </header>
+              </th>
+            </tr>
+          </thead>
           <tbody>
           {Array.from({ length: rows }, (_, rowIndex) => (
             <tr key={rowIndex}>
@@ -214,6 +275,7 @@ function App() {
                       if (event.button === 0) {
                         if (!tile.isFlagged) {
                           revealTile(tile.row, tile.col);
+                          setFace('clicked')
                         }
                       } else if (event.button === 2) {
                         if (tile.isFlagged) {
