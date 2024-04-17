@@ -2,6 +2,7 @@ export interface ApiResponse {
   gameId: string
   board: Board
   mineExploded: boolean
+  gameWon: boolean
 }
 
 export interface Board {

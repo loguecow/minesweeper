@@ -191,11 +191,7 @@ function App() {
   const minesLeft = _mines - flaggedTiles;
 
   const checkVictory = () => {
-    const totalTiles = rows * columns;
-    const totalMines = _mines;
-    const revealedTiles = tileData.filter(tile => tile.isRevealed).length;
-  
-    if (revealedTiles === totalTiles - totalMines) {
+    if (apiResponse?.gameWon) {
       setGameWon(true);
       stopTimer();
       setFace('won');
@@ -269,7 +265,7 @@ function App() {
                     onDrag={(event) => event.preventDefault()}
                     onMouseDown={(event) => {
                       event.preventDefault();
-                      if (apiResponse?.mineExploded) {
+                      if (apiResponse?.mineExploded || apiResponse?.gameWon) {
                         console.log('Game Over');
                         return;
                       }

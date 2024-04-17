@@ -8,4 +8,5 @@ public class GameResponse
     public Board Board { get; set; } = new Board();
 
     public bool MineExploded { get; set; }
+    public bool GameWon { get; set; }
 }
