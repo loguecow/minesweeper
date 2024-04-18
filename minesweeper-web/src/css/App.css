@@ -73,7 +73,7 @@ td:hover{
   padding: 3px;
   margin-top: 2px;
   height: 30px;
-  width: 30px;
+  width: 3ch;
   text-align: center;
   flex: 1;
 }
@@ -86,7 +86,7 @@ td:hover{
   padding: 3px;
   margin-top: 2px;
   height: 30px;
-  width: 30px;
+  width: 3ch;
   text-align: center;
   flex: 1;
 }

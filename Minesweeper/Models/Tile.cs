@@ -11,4 +11,5 @@ public class Tile
     public bool IsFlagged { get; set; } = false;
     public bool IsRevealed { get; set; } = false;
     public int AdjacentMines { get; set; } = 0;
+    public bool Exploded { get; set; } = false;
 }

@@ -217,7 +217,7 @@ function App() {
   const startTimer = () => {
     if (intervalRef.current !== null) return; // Timer already started
     intervalRef.current = setInterval(() => {
-      setSeconds(seconds => seconds + 1);
+      setSeconds(seconds => seconds < 999 ? seconds + 1 : 999);
     }, 1000);
   };
   const stopTimer = () => {
@@ -245,7 +245,7 @@ function App() {
                     <option value={2}>Expert</option>
                   </select>
                   <div style={{display: 'flex'}}>
-                  {apiResponse?.board != null && <div className='timer'>{seconds}</div>}
+                  {apiResponse?.board != null && <div className='timer'>{String(seconds).padStart(3, '0')}</div>}
                   <div className='faceImage'><a onClick={CreateNewGame}><img src={faceImage}/></a></div>
                   {apiResponse?.board != null && <div className='flagleft'>{minesLeft}</div>}
                   </div>
@@ -285,10 +285,11 @@ function App() {
                     }}
                     onContextMenu={(event) => event.preventDefault()}
                     style={{
-                      backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#ddd' : (tile.isRevealed ? '#ddd' : 'white'))}}
+                      backgroundColor: tile.exploded ? 'red' : (tile.isFlagged ? '#ddd' : (tile.isRevealed ? '#ddd' : 'white'))
+                    }}
                   >
-                    {apiResponse?.mineExploded && <img src={exploded} style={{width: 16, height: 16}} alt="explosion" />}
                     <div id='tile'>
+                      {tile.exploded ? <img src={exploded}/> : null}
                       {tile.isFlagged ? <FaFlag color="red"/> : (tile.isRevealed ? getIconForAdjacentMines(tile.adjacentMines) : null)}
                     </div>
                   </td>

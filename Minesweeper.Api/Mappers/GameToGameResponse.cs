@@ -23,7 +23,8 @@ public class GameToGameResponse
                         Row = row,
                         IsRevealed = game._board.Tiles[row, col].IsRevealed,
                         IsFlagged = game._board.Tiles[row, col].IsFlagged,
-                        AdjacentMines = game._board.Tiles[row, col].AdjacentMines
+                        AdjacentMines = game._board.Tiles[row, col].AdjacentMines,
+                        Exploded = game._board.Tiles[row, col].Exploded
                     }
                 );
             }
