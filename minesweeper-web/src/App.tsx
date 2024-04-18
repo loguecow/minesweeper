@@ -179,7 +179,7 @@ function App() {
       _mines = 10;
       break;
       case 1:
-        _mines = 15;
+        _mines = 30;
         break;
         case 2:
           _mines = 90;

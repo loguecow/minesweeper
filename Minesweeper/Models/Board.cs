@@ -65,6 +65,19 @@ public class Board
             RevealAdjacentTiles(adjacentTileReferences);
 
     }
+    private void RevealAllTiles()
+    {
+        for (int row = 0; row < Rows; row++)
+        {
+            for (int column = 0; column < Columns; column++)
+            {
+                if (!Tiles[row, column].IsRevealed)
+                {
+                    Tiles[row, column].IsFlagged = true;
+                }
+            }
+        }
+    }
 
     private int totalTiles()
     {
@@ -77,6 +90,7 @@ public class Board
         if (unrevealedTiles == Mines)
         {
             GameWon = true;
+            RevealAllTiles();
         }
     }
     public void PlaceMine(int row, int column)

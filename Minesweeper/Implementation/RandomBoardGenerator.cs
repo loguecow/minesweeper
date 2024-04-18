@@ -24,13 +24,13 @@ public class RandomBoardGenerator : IBoardGenerator
                     _mines = 10;
                     break;
                 case Level.Intermediate:
-                    _rows = 18;
-                    _columns = 18;
-                    _mines = 15;
+                    _rows = 16;
+                    _columns = 16;
+                    _mines = 30;
                     break;
                 case Level.Expert:
-                    _rows = 60;
-                    _columns = 60;
+                    _rows = 30;
+                    _columns = 30;
                     _mines = 90;
                     break;
         }
