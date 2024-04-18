@@ -176,7 +176,7 @@ function App() {
   const flaggedTiles = tileData.filter(tile => tile.isFlagged).length;
   switch(level) {
     case 0:
-      _mines = 10;
+      _mines = 2;
       break;
       case 1:
         _mines = 30;
