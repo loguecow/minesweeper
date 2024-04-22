@@ -1,0 +1,28 @@
+@HostAddress = http://localhost:5008
+@GameId = d7e48bb2-71eb-480e-9e3a-fa1aa209c263
+
+### Create new game
+POST {{HostAddress}}/games/
+Accept: application/json
+Content-Type: application/json
+
+{
+  "level": 0,
+  "userName": "Ronny",
+  "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+
+### Get game
+GET {{HostAddress}}/games/{{GameId}}
+Accept: application/json
+
+### Update game
+PUT {{HostAddress}}/games/{{GameId}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "row": 0,
+  "column": 1,
+  "move": 0
+}
