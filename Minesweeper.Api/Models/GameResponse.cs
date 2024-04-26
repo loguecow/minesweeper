@@ -9,4 +9,5 @@ public class GameResponse
 
     public bool MineExploded { get; set; }
     public bool GameWon { get; set; }
+    public int Mines { get; set; }
 }

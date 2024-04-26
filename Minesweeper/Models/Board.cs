@@ -30,11 +30,7 @@ public class Board
         {
             CorrectlyFlaggedTiles++;
         }
-        if (CorrectlyFlaggedTiles == Mines)
-        {
-            GameWon = true;
-            MakeAllTiles(flag: true);
-        }
+        CheckGameWon();
     }
 
     public void UnflagTile(int row, int column)
@@ -56,6 +52,7 @@ public class Board
 
         Tiles[row,column].IsRevealed = true;
         IsreavealedTiles++;
+        CheckGameWon();
         
         OnlyRemainingMines();
 
@@ -66,6 +63,13 @@ public class Board
             RevealAdjacentTiles(adjacentTileReferences);
 
     }
+    private void CheckGameWon()
+{
+    if (CorrectlyFlaggedTiles == Mines && IsreavealedTiles == Rows * Columns - Mines)
+    {
+        GameWon = true;
+    }
+}
     private void MakeAllTiles(bool flag)
     {
         for (int row = 0; row < Rows; row++)

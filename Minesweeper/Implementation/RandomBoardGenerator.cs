@@ -21,7 +21,7 @@ public class RandomBoardGenerator : IBoardGenerator
                 case Level.Beginner:
                     _rows = 9;
                     _columns = 9;
-                    _mines = 2;
+                    _mines = 10;
                     break;
                 case Level.Intermediate:
                     _rows = 16;

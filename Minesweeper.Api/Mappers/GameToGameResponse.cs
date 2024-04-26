@@ -9,7 +9,8 @@ public class GameToGameResponse
         var gameResponse = new GameResponse()
         {
             GameId = game.Id,
-            Board = new Board()
+            Board = new Board(),
+            Mines = game._board.Mines,
         };
 
         for (int row = 0; row < game._board.Rows; row++)

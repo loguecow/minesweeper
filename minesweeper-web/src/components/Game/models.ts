@@ -3,6 +3,7 @@ export interface ApiResponse {
   board: Board
   mineExploded: boolean
   gameWon: boolean
+  mines: number
 }
 
 export interface Board {
