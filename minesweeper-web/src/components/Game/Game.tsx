@@ -4,6 +4,8 @@ import Board from './Board';
 import { ApiResponse, Tile } from './models';
 import '../../css/Game.css';
 
+import '@digdir/designsystemet-theme';
+import '@digdir/designsystemet-css';
 import { ToggleGroup } from '@digdir/designsystemet-react';
 
 import faceClicked from '../../img/faceclicked.gif';
@@ -17,17 +19,22 @@ function Game() {
   const [level, setLevel] = useState(0);
   const [face, setFace] = useState('normal');
   const [seconds, setSeconds] = useState(0);
-  const [gameId, setGameId] = useState<string | null>('');
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [isTimerActive, setTimerActive] = useState(false);
 
-  useEffect(() => {
+  
+  const startGame = (level = 0) => {
     createNewGame(level).then(data => {
+      setTimerActive(false);
       setApiResponse(data);
       setTileData(data.board.tiles);
-      setGameId(data.gameId);
       setFace('normal');
       setSeconds(0);
-    });
+  });
+  }
+
+  useEffect(() => {
+  startGame(level);
   }, [level]);
 
   useEffect(() => {
@@ -35,7 +42,7 @@ function Game() {
       setMines(apiResponse.mines);
       setTileData(apiResponse.board.tiles);
       if(apiResponse.board.tiles.find(tile => tile.isRevealed)) {
-        startTimer();
+        setTimerActive(true);
       }
     }
     if (apiResponse?.mineExploded) {
@@ -48,15 +55,27 @@ function Game() {
     }
   }, [apiResponse]);
 
-  const startTimer = () => {
-    if (intervalRef.current !== null) return;
-    intervalRef.current = setInterval(() => {
-      setSeconds(seconds => seconds < 999 ? seconds + 1 : 999);
-    }, 1000);
-  };
+  useEffect(() => {
+    const startTimer = () => {
+      intervalRef.current = setInterval(() => {
+        setSeconds(seconds => seconds < 999 ? seconds + 1 : 999);
+      }, 1000);
+    };
+    
+    if (isTimerActive){
+      startTimer();
+    }
+  
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isTimerActive]);
 
   const stopTimer = () => {
     if (intervalRef.current !== null) {
+      setTimerActive(false);
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
@@ -90,24 +109,23 @@ function Game() {
 
   return (
     <div className="game">
-    <h1>Minesweeper</h1>
     <div className="info">
       <div className='timer'>{String(seconds).padStart(3, '0')}</div>
-      <button onClick={() => window.location.reload()}><img src={faceImage}/></button>
+      <button onClick={() => startGame(level)}><img src={faceImage}/></button>
       <div className='flaggedminesleft'>{String(flaggedminesleft).padStart(3, '0')}</div>
     </div>
-      <ToggleGroup defaultValue='0' onChange={(value) => setLevel(Number(value))}>
-        <ToggleGroup.Item value='0'>Beginner</ToggleGroup.Item>
-        <ToggleGroup.Item value='1'>Intermediate</ToggleGroup.Item>
-        <ToggleGroup.Item value='2'>Expert</ToggleGroup.Item>
+      <ToggleGroup style={{minWidth:'190px', width: '190px'}} size="small" defaultValue='0' onChange={(value) => setLevel(Number(value))}>
+        <ToggleGroup.Item value='0'>Easy</ToggleGroup.Item>
+        <ToggleGroup.Item value='1'>Medium</ToggleGroup.Item>
+        <ToggleGroup.Item value='2'>Hard</ToggleGroup.Item>
       </ToggleGroup>
     <Board 
       tileData={tileData} 
       apiResponse={apiResponse}
       getIconForAdjacentMines={getIconForAdjacentMines}
-      revealTile={(row, col) => revealTile(gameId ?? '',row, col).then(data => setApiResponse(data))}
-      flagTile={(row, col) => flagTile(gameId ?? '', row, col).then(data => setApiResponse(data))}
-      unflagTile={(row, col) => unflagTile(gameId ?? '',row, col).then(data => setApiResponse(data))}
+      revealTile={(row, col) => revealTile(apiResponse?.gameId ?? '',row, col).then(data => setApiResponse(data))}
+      flagTile={(row, col) => flagTile(apiResponse?.gameId ?? '', row, col).then(data => setApiResponse(data))}
+      unflagTile={(row, col) => unflagTile(apiResponse?.gameId ?? '',row, col).then(data => setApiResponse(data))}
     />
   </div>
   );
